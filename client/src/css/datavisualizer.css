@@ -1,0 +1,353 @@
+.visualizer-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f3f4f6;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: #f3f4f6;
+}
+
+.topbar-left {
+  flex: 1;
+}
+
+.topbar-center {
+  flex: 2;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.topbar-right {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* spacing between icon and button */
+}
+
+.user-icon {
+  background-color: #e0e0e0;
+  border-radius: 50%;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signout-button {
+  background-color: white;
+  border: 1px solid #ddd;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  letter-spacing: 0.8px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+}
+
+
+.title {
+  font-size: 30px;
+  font-weight: 400;
+  margin-right: 80px;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
+}
+
+.tabset {
+  display: flex;
+  justify-content: flex-start; 
+  align-items: center;
+  flex-wrap: nowrap;  
+  letter-spacing: 0.8px;         
+  white-space: nowrap;        
+  font-size: 50px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
+  overflow-x: auto;           
+}
+
+.tab {
+  background: none;
+  border: none;
+  font-size: 20px;
+  letter-spacing: 0.8px;
+  color: #444;
+  padding: 8px 10px;
+  cursor: pointer;
+  position: relative;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
+}
+
+.tab.active {
+  font-weight: 600;
+}
+.tab.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 2px;
+  background-color:black;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+  white-space: nowrap;
+}
+
+.profile-pic {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+
+.tab-content-card {
+  margin: 30px auto;
+  width: 95%;
+  height: calc(100vh - 100px);
+  background-color: white;
+  border-radius: 20px;
+  border: 2px solid white;
+  padding: 30px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 122, 255, 0.1);
+  overflow: auto;
+}
+
+.library-tab {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.library-left {
+  flex: 1;
+  padding: 20px;
+}
+
+.dropdown-section label {
+  display: block;
+  margin-top: 15px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
+  font-size: 200px;
+}
+
+.dropdown-section {
+  max-width: 300px;
+}
+.library-title {
+  margin-bottom: 60px;
+}
+
+.dropdown-group {
+  margin-bottom: 30px;  /* more space between groups */
+  min-height: 80px;     /* increase height of the group */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dropdown-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 18px;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', sans-serif;
+  font-size: 20px;
+}
+
+.dropdown-group select {
+  width: 250px;
+  padding: 6px 10px;
+  border-radius: 8px; 
+  width: 100%;
+  max-width: 350px;
+  font-size: 14px;
+}
+
+.dropdown-section {
+  max-width: 400px; /* or more */
+  margin-top: 20px;
+}
+
+.dropdown-section select {
+  width: 300px;
+  padding: 6px 10px;
+  margin-top: 5px;
+  font-size: 18px;
+}
+
+.dropdown-group {
+  margin-bottom: 20px;
+}
+
+.library-right {
+  width: 300%;
+  padding: 20px;
+  
+}
+
+.info-card {
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  min-height: 650px;
+  height: 300px;
+  position: relative;
+}
+
+.info-card-icons {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.icon-button {
+  background-color: white;
+  border: 1px solid black;
+  margin-bottom: 5rem;
+  border-radius: 50%;
+  padding: 2px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+.info-placeholder {
+  color: #888;
+  font-size: 0.9rem;
+  padding: 1rem;
+  text-align: center;
+}
+.map-wrapper {
+  margin-top: 2rem;
+  height: 800px;
+  width: 300%;
+   position: relative;
+}
+
+.icon-button:hover {
+  background-color: #f0f0f0;
+}
+
+.select {
+  margin-top: 5px;
+}
+
+.select select {
+  width: 100%;
+  max-width: 350px;
+  padding: 14px 12px;   
+  font-size: 16px;
+  height: 50px;           
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.single-card-layout {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.info-card {
+  background-color: white;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  min-height: 800px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+}
+
+.info-card-text {
+  font-size: 24px;
+  font-weight: 500;
+  font-family: 'Trebuchet MS', sans-serif;
+}
+
+.custom-legend {
+position: absolute;
+  bottom: 16px;
+  right: 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 12px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.legend-title {
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-color-box {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+.legend-label {
+  font-size: 14px;
+  color: #333;
+}
+
+.map-tooltip {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #aaa;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  pointer-events: none;
+  z-index: 0;
+}
+

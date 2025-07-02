@@ -1,0 +1,24 @@
+/* Main container for navbar */
+.navbar {
+  position: fixed;
+  top: 20px;
+  left: 0;
+  right: 0;
+  padding: 0 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1000;
+  background: transparent;
+}
+
+/* Title styling */
+.navbar-heading {
+  color: #333;
+  font-family: 'Trebuchet MS', sans-serif;
+  font-size: 26px;
+  font-weight: 500;
+  margin: 0;
+}
+
+
