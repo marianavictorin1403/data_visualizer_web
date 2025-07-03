@@ -69,7 +69,7 @@ const DataVisualizer = () => {
   useEffect(() => {
     if (selectedCountryId) {
       axios
-        .get(`http://localhost:5050/sector/by-country/${selectedCountryId}`)
+        .get(`https://data-visualizer-web.onrender.com/sector/by-country/${selectedCountryId}`)
         .then(res => setSectors(res.data));
     }
   }, [selectedCountryId]);
@@ -78,7 +78,7 @@ const DataVisualizer = () => {
     if (selectedSectorId && selectedCountryId) {
       axios
         .get(
-          `http://localhost:5050/source/by-sector-country/${selectedSectorId}/${selectedCountryId}`
+          `https://data-visualizer-web.onrender.com/source/by-sector-country/${selectedSectorId}/${selectedCountryId}`
         )
         .then(res => setSources(res.data));
     }
