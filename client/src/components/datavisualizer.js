@@ -62,7 +62,7 @@ const DataVisualizer = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:5050/country')
+      .get('https://data-visualizer-web.onrender.com/country')
       .then(res => setCountries(res.data));
   }, []);
 
