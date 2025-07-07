@@ -59,17 +59,20 @@ const DataVisualizer = () => {
     textTransform: 'none',
     whiteSpace: 'nowrap',
   };
+  const exportRef = useRef(null);
 
   useEffect(() => {
     axios
-      .get('https://data-visualizer-web.onrender.com/country')
+     .get('http://localhost:5050/country')
+      // .get('https://data-visualizer-web.onrender.com/country')
       .then(res => setCountries(res.data));
   }, []);
 
   useEffect(() => {
     if (selectedCountryId) {
       axios
-        .get(`https://data-visualizer-web.onrender.com/sector/by-country/${selectedCountryId}`)
+      .get(`http://localhost:5050/sector/by-country/${selectedCountryId}`)
+        // .get(`https://data-visualizer-web.onrender.com/sector/by-country/${selectedCountryId}`)
         .then(res => setSectors(res.data));
     }
   }, [selectedCountryId]);
@@ -77,9 +80,11 @@ const DataVisualizer = () => {
   useEffect(() => {
     if (selectedSectorId && selectedCountryId) {
       axios
-        .get(
-          `https://data-visualizer-web.onrender.com/source/by-sector-country/${selectedSectorId}/${selectedCountryId}`
-        )
+      .get(
+          `http://localhost:5050/source/by-sector-country/${selectedSectorId}/${selectedCountryId}`)
+        // .get(
+        //   `https://data-visualizer-web.onrender.com/source/by-sector-country/${selectedSectorId}/${selectedCountryId}`
+        // )
         .then(res => setSources(res.data));
     }
   }, [selectedSectorId, selectedCountryId]);
@@ -174,9 +179,9 @@ const DataVisualizer = () => {
   };
 
   const handleDownload = async () => {
-    if (!mapRef.current) return;
+    if (!exportRef.current) return;
 
-    const canvas = await html2canvas(mapRef.current, {
+    const canvas = await html2canvas(exportRef.current, {
       useCORS: true,
       allowTaint: false,
       backgroundColor: '#fff',
@@ -188,6 +193,24 @@ const DataVisualizer = () => {
     link.href = canvas.toDataURL('image/jpeg', 1.0);
     link.click();
   };
+const numericValues = Object.values(mapData).filter(v => typeof v === 'number');
+const minValue = numericValues.length ? Math.min(...numericValues) : 0;
+const maxValue = numericValues.length ? Math.max(...numericValues) : 100;
+
+const numRanges = 4;
+const rangeSize = Math.ceil((maxValue - minValue + 1) / numRanges);
+
+// Generate ranges
+const legendRanges = Array.from({ length: numRanges }, (_, i) => {
+  const start = minValue + i * rangeSize;
+  const end = Math.min(start + rangeSize - 1, maxValue);
+  const mid = (start + end) / 2;
+  return {
+    label: `${start} – ${end}`,
+    color: getColor(mid),
+  };
+});
+
 
   return (
     <Box
@@ -810,132 +833,158 @@ const DataVisualizer = () => {
                   )}
 
                   {/* Title */}
-                  {selectedSourceUrl && selectedSourceName && selectedField && (
-                    <Typography
-                      variant='h6'
-                      align='center'
-                      sx={{
-                        mt: {xs: 1, sm: 2}, // Responsive top margin
-                        mb: {xs: 2, sm: 3}, // Responsive bottom margin
-                        fontWeight: 100,
-                        fontSize: {xs: 18, sm: 20, md: 24}, // Responsive font size
-                        fontFamily: 'Poppins, sans-serif',
-                        textAlign: 'center', // Ensures center alignment on all screens
-                        wordWrap: 'break-word', // Ensures clean wrapping on smaller screens
-                      }}
-                    >
-                      India ({splitCamelCase(selectedSourceName)}) -{' '}
-                      {splitCamelCase(selectedField)}
-                    </Typography>
-                  )}
+                {selectedSourceUrl && selectedSourceName && selectedField ? (
+  <Box ref={exportRef}>
+    {/* Header */}
+    <Typography
+      variant='h6'
+      align='center'
+      sx={{
+        mt: { xs: 1, sm: 2 },
+        mb: { xs: 2, sm: 3 },
+        fontWeight: 100,
+        fontSize: { xs: 18, sm: 20, md: 24 },
+        fontFamily: 'Poppins, sans-serif',
+        textAlign: 'center',
+        wordWrap: 'break-word',
+      }}
+    >
+      India ({splitCamelCase(selectedSourceName)}) - {splitCamelCase(selectedField)}
+    </Typography>
 
-                  {/* Message if no field is selected */}
-                  {!selectedField ? (
-                    <Box
-                      sx={{
-                        mt: {xs: 10, sm: 16, md: 20}, // Responsive top margin
-                        textAlign: 'center',
-                        fontFamily: 'Poppins, sans-serif',
-                        color: '#F7FAFC',
-                        fontSize: {xs: 14, sm: 16, md: 18}, // Responsive font size
-                        px: {xs: 2, sm: 4}, // Optional: Add padding for smaller screens
-                      }}
-                    >
-                      {selectedCountryId && sectors.length === 0
-                        ? 'The selected country does not have any dataset.'
-                        : selectedSectorId && sources.length === 0
-                        ? 'The selected dataset does not have any source.'
-                        : 'Please select a field to visualize the map.'}
-                    </Box>
-                  ) : (
-                    <Box
-                      ref={mapRef}
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        width: '100%',
-                        minHeight: {xs: '400px', sm: '600px', md: '800px'}, // Responsive height
-                        borderRadius: '16px',
-                        ml: {xs: 0, sm: '80px', md: '160px', lg: '240px'}, // Responsive left margin
-                        mt: {xs: '20px', sm: '40px', md: '60px'}, // Responsive top margin
-                      }}
-                    >
-                      <svg
-                        viewBox='0 0 1000 1000'
-                        width='1000'
-                        height='1000'
-                        style={{display: 'block'}}
-                        strokeWidth={5}
-                      >
-                        {IndiaSVGPaths.features.map((feature, idx) => {
-                          const stateName = feature.properties?.st_nm;
-                          const value = mapData[stateName];
-                          const color = getColor(value);
-                          const {type, coordinates} = feature.geometry;
-                          const polys =
-                            type === 'Polygon' ? [coordinates] : coordinates;
+    {/* Map */}
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        minHeight: { xs: '400px', sm: '600px', md: '800px' },
+        borderRadius: '16px',
+        ml: { xs: 0, sm: '80px', md: '160px', lg: '240px' },
+        mt: { xs: '20px', sm: '40px', md: '60px' },
+      }}
+    >
+      <svg
+        viewBox='0 0 1000 1000'
+        width='1000'
+        height='1000'
+        style={{ display: 'block' }}
+        strokeWidth={5}
+      >
+        {IndiaSVGPaths.features.map((feature, idx) => {
+          const stateName = feature.properties?.st_nm;
+          const value = mapData[stateName];
+          const color = getColor(value);
+          const { type, coordinates } = feature.geometry;
+          const polys = type === 'Polygon' ? [coordinates] : coordinates;
 
-                          return polys.map((polygon, polyIdx) => {
-                            const points = polygon[0].map(([lon, lat]) => [
-                              (lon - 68) * 20,
-                              (38 - lat) * 20,
-                            ]);
-                            const d =
-                              points
-                                .map(
-                                  ([x, y], i) =>
-                                    `${i === 0 ? 'M' : 'L'} ${x},${y}`
-                                )
-                                .join(' ') + ' Z';
+          return polys.map((polygon, polyIdx) => {
+            const points = polygon[0].map(([lon, lat]) => [
+              (lon - 68) * 20,
+              (38 - lat) * 20,
+            ]);
+            const d =
+              points.map(([x, y], i) => `${i === 0 ? 'M' : 'L'} ${x},${y}`).join(' ') + ' Z';
 
-                            return (
-                              <path
-                                key={`path-${idx}-${polyIdx}`}
-                                d={d}
-                                fill={color}
-                                stroke='#111'
-                                strokeWidth={1.9}
-                                onMouseEnter={() => {
-                                  const centroid = points
-                                    .reduce(
-                                      (acc, [x, y]) => [acc[0] + x, acc[1] + y],
-                                      [0, 0]
-                                    )
-                                    .map(v => v / points.length);
-                                  setTooltip({
-                                    show: true,
-                                    x: centroid[0],
-                                    y: centroid[1] - 10,
-                                    content: `${stateName}: ${value ?? 'N/A'}`,
-                                    stateName,
-                                  });
-                                }}
-                                onMouseLeave={() =>
-                                  setTooltip({...tooltip, show: false})
-                                }
-                              />
-                            );
-                          });
-                        })}
-                        {/* Tooltip */}
-                        {tooltip.show && (
-                          <text
-                            x={tooltip.x}
-                            y={tooltip.y}
-                            textAnchor='middle'
-                            fontSize='16'
-                            fontFamily='sans-serif'
-                            fill='#000'
-                            stroke='#fff'
-                            paintOrder='stroke fill'
-                          >
-                            {tooltip.content}
-                          </text>
-                        )}
-                      </svg>
-                    </Box>
-                  )}
+            return (
+              <path
+                key={`path-${idx}-${polyIdx}`}
+                d={d}
+                fill={color}
+                stroke='#111'
+                strokeWidth={1.9}
+                onMouseEnter={() => {
+                  const centroid = points
+                    .reduce((acc, [x, y]) => [acc[0] + x, acc[1] + y], [0, 0])
+                    .map(v => v / points.length);
+                  setTooltip({
+                    show: true,
+                    x: centroid[0],
+                    y: centroid[1] - 10,
+                    content: `${stateName}: ${value ?? 'N/A'}`,
+                    stateName,
+                  });
+                }}
+                onMouseLeave={() => setTooltip({ ...tooltip, show: false })}
+              />
+            );
+          });
+        })}
+
+        {tooltip.show && (
+          <text
+            x={tooltip.x}
+            y={tooltip.y}
+            textAnchor='middle'
+            fontSize='16'
+            fontFamily='sans-serif'
+            fill='#000'
+            stroke='#fff'
+            paintOrder='stroke fill'
+          >
+            {tooltip.content}
+          </text>
+        )}
+      </svg>
+    </Box>
+    <Box
+  sx={{
+    position: 'absolute',
+    bottom: 16,
+    right: 120,
+    backgroundColor: '#fff',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    boxShadow: 2,
+    p: 1.5,
+    fontFamily: 'Poppins, sans-serif',
+    fontSize: '12px',
+    minWidth: '100px',
+  }}
+>
+  {legendRanges.map((item, idx) => (
+    <Box
+      key={idx}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        mb: 0.5,
+      }}
+    >
+      <Box
+        sx={{
+          width: '12px',
+          height: '12px',
+          backgroundColor: item.color,
+          borderRadius: '2px',
+          marginRight: '8px',
+          border: '1px solid #999',
+        }}
+      />
+      <span>{item.label}</span>
+    </Box>
+  ))}
+</Box>
+  </Box>
+) : (
+  <Box
+    sx={{
+      mt: { xs: 10, sm: 16, md: 20 },
+      textAlign: 'center',
+      fontFamily: 'Poppins, sans-serif',
+      color: '#F7FAFC',
+      fontSize: { xs: 14, sm: 16, md: 18 },
+      px: { xs: 2, sm: 4 },
+    }}
+  >
+    {selectedCountryId && sectors.length === 0
+      ? 'The selected country does not have any dataset.'
+      : selectedSectorId && sources.length === 0
+      ? 'The selected dataset does not have any source.'
+      : 'Please select a field to visualize the map.'}
+  </Box>
+)}
                 </Box>
               </Box>
             </Paper>
